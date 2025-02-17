@@ -16,7 +16,7 @@ settings = {
     "start_key": "F1",
     "stop_key": "F2",
     "replay_key": "F3",
-    "path": "C:\\Users\\smart\\OneDrive\\Ishchi stol\\tinytask\\record.json",
+    "path": ".\\record.json",
     "on_top": "True",
 }
 
