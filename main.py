@@ -17,7 +17,7 @@ settings = {
     "stop_key": "F2",
     "replay_key": "F3",
     "path": ".\\record.json",
-    "on_top": "True"
+    "on_top": "True",
 }
 
 # Initialize CustomTkinter
