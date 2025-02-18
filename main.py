@@ -263,4 +263,5 @@ replay_button.pack(pady=10)
 exit_button = ctk.CTkButton(app, text="Exit", command=app.quit, fg_color="red")
 exit_button.pack(pady=10)
 
-app.mainloop()
+def main():
+    app.mainloop()
