@@ -6,7 +6,7 @@ import mouse
 import json
 import threading
 import customtkinter as ctk
-from tkinter import filedialog, messagebox, Menu
+from tkinter import Menu
 
 # Storage for recorded events and settings
 recorded_events = []
