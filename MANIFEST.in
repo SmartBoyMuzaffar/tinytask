@@ -1,0 +1,7 @@
+include MANIFEST.in
+include LICENSE
+include tinytask/src/play2.png
+include tinytask/src/stop2.png
+include tinytask/src/replay2.png
+include tinytask/src/x2.png
+recursive-include tinytask/src *.png

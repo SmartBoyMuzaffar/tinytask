@@ -7,6 +7,15 @@ import json
 import threading
 import customtkinter as ctk
 from tkinter import Menu
+from PIL import Image
+import os
+
+print(os.getcwd())
+
+image_play = ctk.CTkImage(light_image=Image.open(f"{os.getcwd()}/src/play2.png"), size=(30, 30))
+image_stop = ctk.CTkImage(light_image=Image.open(f"{os.getcwd()}/src/stop2.png"), size=(30, 30))
+image_replay = ctk.CTkImage(light_image=Image.open(f"{os.getcwd()}/src/replay2.png"), size=(30, 30))
+image_exit = ctk.CTkImage(light_image=Image.open(f"{os.getcwd()}/src/x2.png"), size=(30, 30))
 
 # Storage for recorded events and settings
 recorded_events = []
@@ -19,6 +28,7 @@ settings = {
     "replay_key": "F3",
     "path": ".\\record.json",
     "on_top": "True",
+    "repeats": "1",
 }
 
 # Initialize CustomTkinter
@@ -30,7 +40,8 @@ path = os.path.join(settings["path"])
 # Create main app window
 app = ctk.CTk()
 app.title(settings["app_name"])
-app.geometry("500x350+0+0")
+app.geometry("250x100+0+0")
+
 app.attributes("-topmost", settings["on_top"])
 
 
@@ -108,39 +119,41 @@ def load_events():
 
 
 def replay_events():
-    """ Replay recorded keyboard and mouse actions """
-    events = load_events()
-    if not events:
-        print("No events to replay.")
-        return
+    for i in range(int(settings["repeats"])):
 
-    print("Replaying actions...")
-    start_time = time.time()
-    update_ui_state(True)  # Disable buttons during replay
+        """ Replay recorded keyboard and mouse actions """
+        events = load_events()
+        if not events:
+            print("No events to replay.")
+            return
 
-    for event in events:
-        time.sleep(max(0, event['time'] - (time.time() - start_time)))
+        print("Replaying actions...")
+        start_time = time.time()
+        update_ui_state(True)  # Disable buttons during replay
 
-        if event['type'] == 'keyboard':
-            if event['event'] == 'down':
-                keyboard.press(event['key'])
-            else:
-                keyboard.release(event['key'])
+        for event in events:
+            time.sleep(max(0, event['time'] - (time.time() - start_time)))
 
-        elif event['type'] == 'mouse':
-            if event['event'] == 'move':
-                mouse.move(event['x'], event['y'], absolute=True)
-            elif event['event'] == 'click':
-                mouse.move(event['x'], event['y'], absolute=True, duration=0.05)
-                if event['pressed']:
-                    mouse.press(event['button'])
+            if event['type'] == 'keyboard':
+                if event['event'] == 'down':
+                    keyboard.press(event['key'])
                 else:
-                    mouse.release(event['button'])
-            elif event['event'] == 'scroll':
-                mouse.wheel(event['delta'])
+                    keyboard.release(event['key'])
 
-    print("Replay finished.")
-    update_ui_state(False)  # Enable buttons after replay
+            elif event['type'] == 'mouse':
+                if event['event'] == 'move':
+                    mouse.move(event['x'], event['y'], absolute=True)
+                elif event['event'] == 'click':
+                    mouse.move(event['x'], event['y'], absolute=True, duration=0.05)
+                    if event['pressed']:
+                        mouse.press(event['button'])
+                    else:
+                        mouse.release(event['button'])
+                elif event['event'] == 'scroll':
+                    mouse.wheel(event['delta'])
+
+        print("Replay finished.")
+        update_ui_state(False)  # Enable buttons after replay
 
 
 def update_ui_state(disabled):
@@ -167,7 +180,7 @@ def open_settings():
     """ Open settings window to change theme & key bindings """
     settings_window = ctk.CTkToplevel(app)
     settings_window.title("Settings")
-    settings_window.geometry("400x430+500+0")
+    settings_window.geometry("400x500+350+0")
 
     prev_settings = settings.copy()
 
@@ -178,6 +191,7 @@ def open_settings():
         settings["stop_key"] = stop_key_entry.get()
         settings["replay_key"] = replay_key_entry.get()
         settings["on_top"] = on_top_var.get()
+        settings["repeats"] = repeats_entry.get()
         try:
             app.bind(f"<{settings['start_key']}>", lambda event: start_recording_thread())
             app.bind(f"<{settings['stop_key']}>", lambda event: stop_recording())
@@ -217,6 +231,10 @@ def open_settings():
     replay_key_entry = ctk.CTkEntry(settings_window, placeholder_text=settings["replay_key"])
     replay_key_entry.pack(pady=5)
 
+    ctk.CTkLabel(settings_window, text="Set repeats:").pack(pady=5)
+    repeats_entry = ctk.CTkEntry(settings_window, placeholder_text=settings["repeats"])
+    repeats_entry.pack(pady=5)
+
     button_frame = ctk.CTkFrame(settings_window)
     button_frame.pack(pady=10)
 
@@ -248,20 +266,22 @@ settings_menu = Menu(menu, tearoff=False)
 menu.add_cascade(label="Settings", menu=settings_menu)
 settings_menu.add_command(label="Preferences", command=open_settings)
 
-title_label = ctk.CTkLabel(app, text=f"{settings["app_name"]}", font=("Arial", 20))
-title_label.pack(pady=10)
+# title_label = ctk.CTkLabel(app, text=f"{settings["app_name"]}", font=("Arial", 20))
+# title_label.pack(pady=10)
 
-start_button = ctk.CTkButton(app, text="Start Recording", command=start_recording_thread)
-start_button.pack(pady=10)
+start_button = ctk.CTkButton(app, text="", image=image_play, fg_color="green", width=30, height=30, command=start_recording_thread)
+start_button.pack(side="left", pady="10", padx="10")
 
-stop_button = ctk.CTkButton(app, text="Stop Recording", command=stop_recording, state="disabled")
-stop_button.pack(pady=10)
+stop_button = ctk.CTkButton(app, text="", image=image_stop, fg_color="yellow", width=30, height=30, command=stop_recording, state="disabled")
+stop_button.pack(side="left", pady="10", padx="10")
 
-replay_button = ctk.CTkButton(app, text="Replay Actions", command=start_replay_thread)
-replay_button.pack(pady=10)
+replay_button = ctk.CTkButton(app, text="", image=image_replay, fg_color="blue", width=30, height=30, command=start_replay_thread)
+replay_button.pack(side="left", pady="10", padx="10")
 
-exit_button = ctk.CTkButton(app, text="Exit", command=app.quit, fg_color="red")
-exit_button.pack(pady=10)
+exit_button = ctk.CTkButton(app, text="", image=image_exit, fg_color="red", width=30, height=30, command=app.quit)
+exit_button.pack(side="left", pady="10", padx="10")
+
+app.mainloop()
 
 def main():
     app.mainloop()
