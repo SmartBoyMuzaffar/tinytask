@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pytinytask",
-    version="3.0",
+    version="3.1",
     author="Smart Boy",
     description="A simple macro recording and replaying tool",
     url="https://github.com/SmartBoyMuzaffar/tinytask",

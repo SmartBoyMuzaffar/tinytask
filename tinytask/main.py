@@ -8,14 +8,15 @@ import threading
 import customtkinter as ctk
 from tkinter import Menu
 from PIL import Image
-import os
+import os, sys
 
-print(os.getcwd())
 
-image_play = ctk.CTkImage(light_image=Image.open(f"{os.getcwd()}/src/play2.png"), size=(30, 30))
-image_stop = ctk.CTkImage(light_image=Image.open(f"{os.getcwd()}/src/stop2.png"), size=(30, 30))
-image_replay = ctk.CTkImage(light_image=Image.open(f"{os.getcwd()}/src/replay2.png"), size=(30, 30))
-image_exit = ctk.CTkImage(light_image=Image.open(f"{os.getcwd()}/src/x2.png"), size=(30, 30))
+python_path = f"{os.path.dirname(sys.executable)}\\Lib\\site-packages\\tinytask\\"
+
+image_play = ctk.CTkImage(light_image=Image.open(f"{python_path}src\\play2.png"), size=(30, 30))
+image_stop = ctk.CTkImage(light_image=Image.open(f"{python_path}src\\stop2.png"), size=(30, 30))
+image_replay = ctk.CTkImage(light_image=Image.open(f"{python_path}src\\replay2.png"), size=(30, 30))
+image_exit = ctk.CTkImage(light_image=Image.open(f"{python_path}src\\x2.png"), size=(30, 30))
 
 # Storage for recorded events and settings
 recorded_events = []
